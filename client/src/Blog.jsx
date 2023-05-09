@@ -5,6 +5,9 @@ import "./Blog.css";
 const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState(false);
+  const [title, setTitle] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [content, setContent] = useState('');
   const API = axios.create({ baseURL: "http://localhost:5000" });
   useEffect(() => {
     API.get("/api/posts")
@@ -12,6 +15,16 @@ const Blog = () => {
       .then((res) => setMessage(true))
       .catch((err) => console.log(err));
   }, []);
+
+  const handleSubmit=(e)=>{
+    API.post("/api/posts",{
+       title: title,
+      imageUrl: imageUrl,
+      content: content
+    })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+  }
   //   const posts= [{
   // title:"Wired",
   // imageUrl:"https://blog.bit.ai/wp-content/uploads/2020/09/screenshot-www.wired_.com-2020.09.08-10_48_18.jpg",
@@ -34,14 +47,26 @@ const Blog = () => {
   //           content:"Mashable is a world-renowned, entertainment, and multi-platform media channel.Powered by its own proprietary technology, this tech blog is the go-to source for tech, digital culture, and entertainment content for its influential and dedicated global audience!It is one of the most influential blogs on technology on the internet today! Mashable provides information to those who wish to catch up on all most everything happening around the tech world including movies, travel, finance, and, of course, gadgets."
   //             }
   //           ]
+
   return (
     <>
+    <div className="form-div">
+    <form onSubmit={handleSubmit}>
+      <input type="text" placeholder="Title" onChange={(e)=>{setTitle(e.target.value)}}/>
+      <input type="text" placeholder="Image URL" onChange={(e)=>{setImageUrl(e.target.value)}} />
+      <textarea placeholder="Content" name="" id="" cols="30" rows="10" onChange={(e)=>{setContent(e.target.value)}}>
+      </textarea>
+      <button className="btn" type="submit">Submit</button>
+    </form>
+    </div>
       {message && (
         <h1
+        className="heading"
           style={{
             textAlign: "center",
             padding: "20px 0px",
             color:"#009bff"
+
           }}
         >
           Blogs
